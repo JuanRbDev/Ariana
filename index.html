@@ -160,10 +160,12 @@
       aspect-ratio: 3/2;
       cursor: pointer;
       perspective: 1200px;
+      
     }
 
     .envelope-wrap:not(.opened):hover .envelope-body {
       transform: translateY(-4px);
+      
     }
 
     .envelope-body {
@@ -241,17 +243,19 @@
       background: #fffdfb;
       border-radius: 6px;
       box-shadow: 0 10px 30px rgba(194, 44, 85, .2);
-      z-index: 3;
+      z-index: 2;
       transform: translateY(6%);
       transition: transform 1.1s cubic-bezier(.2, .8, .2, 1) .15s;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1.2rem;
+
     }
 
     .envelope-wrap.opened .letter {
       transform: translateY(-78%);
+      z-index: 6;
     }
 
     .letter-inner {
@@ -1117,7 +1121,7 @@
       <div class="letter">
         <div class="letter-inner">
           Con cariño
-          <span class="sub">Toca para leer</span>
+          <span class="sub">Espero te guste</span>
         </div>
       </div>
       <div class="envelope-body"></div>
@@ -3392,11 +3396,11 @@ Juan ❤️`;
   <style>
     #moon-section {
       min-height: 100vh;
-      background: radial-gradient(circle at top  #05060f);
+      background: radial-gradient(circle at top #05060f);
       color: white;
     }
 
-    .fgds{
+    .fgds {
       color: #05060f;
       margin-top: 20px;
     }
@@ -3451,7 +3455,9 @@ Juan ❤️`;
   </section>
 
 
-  <audio src="music.mp3" autoplay loop></audio>
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
 
   <style>
@@ -3787,10 +3793,28 @@ Juan ❤️`;
     for (let i = 0; i < HEART_COUNT; i++) { spawnHeart(true); }
 
     // ---------- envelope open ----------
+    // ---------- music ----------
+    const music = document.getElementById("bgMusic");
+    let musicStarted = false;
+
+    // ---------- envelope open ----------
     const envelope = document.getElementById('envelope');
+
     envelope.addEventListener('click', () => {
+
       if (envelope.classList.contains('opened')) return;
+
       envelope.classList.add('opened');
+
+      // Espera un poquito para que coincida con la apertura
+      if (!musicStarted) {
+        setTimeout(() => {
+          music.play().catch(err => console.log(err));
+        }, 500);
+
+        musicStarted = true;
+      }
+
       burstHearts();
     });
 
@@ -3817,7 +3841,8 @@ Juan ❤️`;
     document.getElementById('againBtn').addEventListener('click', () => {
       envelope.classList.remove('opened');
       document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
-    });
+
+    })
 
     // ---------- clouds ----------
     const cloudsWrap = document.getElementById('clouds');
